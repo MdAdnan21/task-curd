@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import Input from '@mui/material/Input';
 import { visuallyHidden } from '@mui/utils';
-import { stableSort, getComparator } from '../components/Adnan';
+import { stableSort, getComparator } from './Data';
 import styles from './style.module.css';
 
 function createData(id, name, email, role) {
@@ -40,9 +40,7 @@ function createData(id, name, email, role) {
 const Footer = () => {
   const [members, setMembers] = useState([]);
   const [editingMemberId, setEditingMemberId] = useState(null);
-  const [editedName, setEditedName] = useState('');
-  const [editedEmail, setEditedEmail] = useState('');
-  const [editedRole, setEditedRole] = useState('');
+  const [editedFields, setEditedFields] = useState({ name: '', email: '', role: '' });
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
@@ -71,9 +69,7 @@ const Footer = () => {
 
   const handleEdit = (id, name, email, role) => {
     setEditingMemberId(id);
-    setEditedName(name);
-    setEditedEmail(email);
-    setEditedRole(role);
+    setEditedFields({ name, email, role });
   };
 
   const handleSaveEdit = (id) => {
@@ -82,9 +78,9 @@ const Footer = () => {
         if (member.id === id) {
           return {
             ...member,
-            name: editedName,
-            email: editedEmail,
-            role: editedRole,
+            name: editedFields.name,
+            email: editedFields.email,
+            role: editedFields.role,
           };
         } else {
           return member;
@@ -292,27 +288,35 @@ const Footer = () => {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {editingMemberId === member.id ? (
                           <>
-                            <input
-                              type="text"
-                              value={editedName}
-                              onChange={(e) => setEditedName(e.target.value)}
-                            />
-                            <input
-                              type="text"
-                              value={editedEmail}
-                              onChange={(e) => setEditedEmail(e.target.value)}
-                            />
-                            <input
-                              type="text"
-                              value={editedRole}
-                              onChange={(e) => setEditedRole(e.target.value)}
-                            />
-                            <button onClick={() => handleSaveEdit(member.id)}>
-                              <SaveIcon />
-                            </button>
-                            <button onClick={handleCancelEdit}>
-                              <CancelIcon />
-                            </button>
+                            <div>
+                              <Input
+                                type="text"
+                                value={editedFields.name}
+                                onChange={(e) => setEditedFields({ ...editedFields, name: e.target.value })}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                value={editedFields.email}
+                                onChange={(e) => setEditedFields({ ...editedFields, email: e.target.value })}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                value={editedFields.role}
+                                onChange={(e) => setEditedFields({ ...editedFields, role: e.target.value })}
+                              />
+                            </div>
+                            <div>
+                              <IconButton onClick={() => handleSaveEdit(member.id)}>
+                                <SaveIcon />
+                              </IconButton>
+                              <IconButton onClick={handleCancelEdit}>
+                                <CancelIcon />
+                              </IconButton>
+                            </div>
                           </>
                         ) : (
                           member.name
@@ -320,45 +324,49 @@ const Footer = () => {
                       </TableCell>
                       <TableCell align="right">
                         {editingMemberId === member.id ? (
-                          <input
-                            type="text"
-                            value={editedEmail}
-                            onChange={(e) => setEditedEmail(e.target.value)}
-                          />
+                          <div>
+                            <Input
+                              type="text"
+                              value={editedFields.email}
+                              onChange={(e) => setEditedFields({ ...editedFields, email: e.target.value })}
+                            />
+                          </div>
                         ) : (
                           member.email
                         )}
                       </TableCell>
                       <TableCell align="right">
                         {editingMemberId === member.id ? (
-                          <input
-                            type="text"
-                            value={editedRole}
-                            onChange={(e) => setEditedRole(e.target.value)}
-                          />
+                          <div>
+                            <Input
+                              type="text"
+                              value={editedFields.role}
+                              onChange={(e) => setEditedFields({ ...editedFields, role: e.target.value })}
+                            />
+                          </div>
                         ) : (
                           member.role
                         )}
                       </TableCell>
                       <TableCell align="right">
                         {editingMemberId === member.id ? (
-                          <>
+                          <div>
                             <IconButton onClick={() => handleSaveEdit(member.id)}>
                               <SaveIcon />
                             </IconButton>
                             <IconButton onClick={handleCancelEdit}>
                               <CancelIcon />
                             </IconButton>
-                          </>
+                          </div>
                         ) : (
-                          <>
+                          <div>
                             <IconButton onClick={() => handleEdit(member.id, member.name, member.email, member.role)}>
                               <EditIcon />
                             </IconButton>
                             <IconButton onClick={() => handleDelete(member.id)}>
                               <DeleteIcon />
                             </IconButton>
-                          </>
+                          </div>
                         )}
                       </TableCell>
                     </TableRow>
